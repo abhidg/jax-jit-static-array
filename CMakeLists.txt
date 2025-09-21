@@ -15,6 +15,7 @@ find_package(nanobind CONFIG REQUIRED)
 set(
   JAX_JIT_STATIC_CPU_PROJECTS
   "rms_norm"
+  "matmul"
 )
 
 foreach(PROJECT ${JAX_JIT_STATIC_CPU_PROJECTS})
