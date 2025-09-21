@@ -7,7 +7,6 @@ for name, target in _matmul.registrations().items():
   jax.ffi.register_ffi_target(name, target)
 
 
-@jax.jit
 def matmul(x, mul: tuple[float]):
   if x.dtype != jnp.float32:
     raise ValueError("Only the float32 dtype is implemented by rms_norm")
