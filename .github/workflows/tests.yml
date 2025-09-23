@@ -1,0 +1,36 @@
+name: tests
+
+on:
+  push:
+    branches: [ main ]
+  pull_request:
+    branches: [ main ]
+
+jobs:
+  tests:
+    runs-on: ubuntu-latest
+    
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+          cache: "pip"
+
+      - name: Install dependencies
+        run: sudo apt install nanobind-dev cmake ninja-build
+
+      - name: Install package and pytest
+        run: |
+          pip install pytest
+          pip install .
+
+      - name: Run tests
+        run: pytest -vv
+
+      - name: Run performance tests
+        run: python matmul_perf.py
+
