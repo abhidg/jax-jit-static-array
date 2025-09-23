@@ -16,7 +16,7 @@ sys.stdout.flush()
 t_nonjit_start = time.time()
 for i in range(100_000):
     matmul_nonjit(x + jrand.normal(key, x.shape), mul)
-    if i % 1000 == 0:
+    if i % 2000 == 0:
         sys.stdout.write(".")
         sys.stdout.flush()
 t_nonjit = time.time() - t_nonjit_start
@@ -27,7 +27,7 @@ sys.stdout.write("   jit ")
 sys.stdout.flush()
 for i in range(100_000):
     matmul_jit(x + jrand.normal(key, x.shape), mul)
-    if i % 1000 == 0:
+    if i % 2000 == 0:
         sys.stdout.write(".")
         sys.stdout.flush()
 t_jit = time.time() - t_jit_start
