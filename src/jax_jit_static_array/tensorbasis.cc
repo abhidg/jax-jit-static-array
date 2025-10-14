@@ -19,13 +19,13 @@ std::pair<int64_t, int64_t> GetDims(const ffi::Buffer<T> &buffer) {
   return std::make_pair(buffer.element_count(), dims.back());
 }
 
-void ComputeAltSquareFreeTensor(size_t size, const float *x, const int* degree_begin, float *y) {
-  y[0] = x[0];
-  size_t basis_idx = 1;
+void ComputeAltSquareFreeTensor(int64_t size, const float *x, const int32_t* degree_begin, float *y) {
+  int basis_idx = 0;
   // start squaring at depth=1, followed by 3, 5, ...
+  // set initial flag to true, immediately turned off by i = degree_begin[0] = 0
   bool should_square_this = true;
-  for (size_t i = 1; i < size; ++i) {
-    if (degree_begin[basis_idx] > i) {
+  for (size_t i = 0; i < size; ++i) {
+    if (i == degree_begin[basis_idx]) {
       // moved onto the next depth, toggle should_square_this
       should_square_this = !should_square_this;
       basis_idx++;
@@ -38,9 +38,9 @@ void ComputeAltSquareFreeTensor(size_t size, const float *x, const int* degree_b
 // library function `ComputeRmsNorm` above. This function handles the batch
 // dimensions by calling `ComputeRmsNorm` within a loop.
 ffi::Error AltSquareFreeTensorImpl(
-    size_t size,
+    int64_t size,
     ffi::Buffer<ffi::F32> x,
-    ffi::Buffer<ffi::I32> degree_begin,
+    ffi::Buffer<ffi::S32> degree_begin,
     ffi::ResultBuffer<ffi::F32> y) {
   auto [totalSize, lastDim] = GetDims(x);
   if (lastDim == 0) {
@@ -55,9 +55,9 @@ ffi::Error AltSquareFreeTensorImpl(
 XLA_FFI_DEFINE_HANDLER_SYMBOL(
     AltSquareFreeTensor, AltSquareFreeTensorImpl,
     ffi::Ffi::Bind()
-        .Arg<size_t>()  // size
+        .Attr<int64_t>("size")  // size
         .Arg<ffi::Buffer<ffi::F32>>()  // x
-        .Arg<ffi::Buffer<ffi::F32>>()  // degree_begin
+        .Arg<ffi::Buffer<ffi::S32>>()  // degree_begin
         .Ret<ffi::Buffer<ffi::F32>>()  // y
 );
 
@@ -68,7 +68,7 @@ nb::capsule EncapsulateFfiHandler(T *fn) {
   return nb::capsule(reinterpret_cast<void *>(fn));
 }
 
-NB_MODULE(_alt_square_free_tensor, m) {
+NB_MODULE(_tensorbasis, m) {
   m.def("registrations", []() {
     nb::dict registrations;
     registrations["alt_square_free_tensor"] = EncapsulateFfiHandler(AltSquareFreeTensor);

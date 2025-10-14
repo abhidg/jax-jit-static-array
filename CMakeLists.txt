@@ -16,6 +16,7 @@ set(
   JAX_JIT_STATIC_CPU_PROJECTS
   "rms_norm"
   "matmul"
+  "tensorbasis"
 )
 
 foreach(PROJECT ${JAX_JIT_STATIC_CPU_PROJECTS})
