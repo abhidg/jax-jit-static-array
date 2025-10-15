@@ -19,17 +19,21 @@ T = jnp.array([2, 1, 3, 0.5, -1, 2, 0], dtype=np.float32)
 class TensorBasis:
     width: int
     depth: int
-    degree_begin: bytes
+    degree_begin: np.ndarray
+
+    def __hash__(self):
+        # This works for the tensor basis as the data is entirely determined
+        # by the tuple (width, depth)
+        return hash((self.width, self.depth))
 
 
 def make_basis(width: int, depth: int) -> TensorBasis:
     data = np.zeros(depth + 2, dtype=np.int64)
     for i in range(1, depth + 2):
         data[i] = 1 + width * data[i - 1]
-    return TensorBasis(width, depth, data.tobytes())
+    return TensorBasis(width, depth, data)
 
 def ft_altsquare(x, basis: TensorBasis):
-    degree_begin = jnp.frombuffer(basis.degree_begin, dtype=jnp.int64)
     if x.dtype != jnp.float32:
         raise ValueError(
             "Only the float32 dtype is implemented by alt_square_free_tensor"
@@ -39,7 +43,7 @@ def ft_altsquare(x, basis: TensorBasis):
         "alt_square_free_tensor",
         jax.ShapeDtypeStruct(x.shape, x.dtype),
     )
-    return call(x, degree_begin, size=int(x.shape[0]))
+    return call(x, basis.degree_begin, size=int(x.shape[0]))
 
 
 ft_altsquare_jit = jax.jit(ft_altsquare, static_argnames=["basis"])
