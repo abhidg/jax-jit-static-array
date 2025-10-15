@@ -19,7 +19,7 @@ std::pair<int64_t, int64_t> GetDims(const ffi::Buffer<T> &buffer) {
   return std::make_pair(buffer.element_count(), dims.back());
 }
 
-void ComputeAltSquareFreeTensor(int64_t size, const float *x, const int32_t* degree_begin, float *y) {
+void ComputeAltSquareFreeTensor(int64_t size, const float *x, const int64_t* degree_begin, float *y) {
   int basis_idx = 0;
   // start squaring at depth=1, followed by 3, 5, ...
   // set initial flag to true, immediately turned off by i = degree_begin[0] = 0
@@ -40,7 +40,7 @@ void ComputeAltSquareFreeTensor(int64_t size, const float *x, const int32_t* deg
 ffi::Error AltSquareFreeTensorImpl(
     int64_t size,
     ffi::Buffer<ffi::F32> x,
-    ffi::Buffer<ffi::S32> degree_begin,
+    ffi::Buffer<ffi::S64> degree_begin,
     ffi::ResultBuffer<ffi::F32> y) {
   auto [totalSize, lastDim] = GetDims(x);
   if (lastDim == 0) {
@@ -57,7 +57,7 @@ XLA_FFI_DEFINE_HANDLER_SYMBOL(
     ffi::Ffi::Bind()
         .Attr<int64_t>("size")  // size
         .Arg<ffi::Buffer<ffi::F32>>()  // x
-        .Arg<ffi::Buffer<ffi::S32>>()  // degree_begin
+        .Arg<ffi::Buffer<ffi::S64>>()  // degree_begin
         .Ret<ffi::Buffer<ffi::F32>>()  // y
 );
 

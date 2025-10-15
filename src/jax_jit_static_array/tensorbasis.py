@@ -18,13 +18,13 @@ class TensorBasis:
 
 
 def make_basis(width: int, depth: int) -> TensorBasis:
-    data = np.zeros(depth + 2, dtype=np.int32)
+    data = np.zeros(depth + 2, dtype=np.int64)
     for i in range(1, depth + 2):
         data[i] = 1 + width * data[i - 1]
     return TensorBasis(width, depth, data.tobytes())
 
 def ft_altsquare(x, basis: TensorBasis):
-    degree_begin = jnp.frombuffer(basis.degree_begin, dtype=jnp.int32)
+    degree_begin = jnp.frombuffer(basis.degree_begin, dtype=jnp.int64)
     if x.dtype != jnp.float32:
         raise ValueError(
             "Only the float32 dtype is implemented by alt_square_free_tensor"
