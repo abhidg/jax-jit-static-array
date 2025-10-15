@@ -5,6 +5,11 @@ import numpy as np
 
 from jax_jit_static_array import _tensorbasis
 
+# https://docs.jax.dev/en/latest/default_dtypes.html#the-x64-flag-enabling-64-bit-values
+# NOTE: This is a global flag and WILL affect code subsequent to tensorbasis module import
+#       Currently JAX does not support contextual configuration, see above link
+jax.config.update('jax_enable_x64', True)
+
 for name, target in _tensorbasis.registrations().items():
   jax.ffi.register_ffi_target(name, target)
 
