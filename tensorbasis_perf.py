@@ -15,7 +15,7 @@ sys.stdout.flush()
 
 t_nonjit_start = time.time()
 for i in range(100_000):
-    ft_altsquare(x + jrand.normal(key, x.shape), basis)
+    ft_altsquare(x + jrand.normal(key, x.shape, dtype=jnp.float32), basis)
     if i % 2000 == 0:
         sys.stdout.write(".")
         sys.stdout.flush()
@@ -26,7 +26,7 @@ t_jit_start = time.time()
 sys.stdout.write("   jit ")
 sys.stdout.flush()
 for i in range(100_000):
-    ft_altsquare_jit(x + jrand.normal(key, x.shape), basis)
+    ft_altsquare_jit(x + jrand.normal(key, x.shape, dtype=jnp.float32), basis)
     if i % 2000 == 0:
         sys.stdout.write(".")
         sys.stdout.flush()
