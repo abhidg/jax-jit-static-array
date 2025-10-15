@@ -26,12 +26,12 @@ def rms_norm_ref(x, eps=1e-5):
 
 
 def test_basic():
-    x = jnp.linspace(-0.5, 0.5, 15)
+    x = jnp.linspace(-0.5, 0.5, 15, dtype=jnp.float32)
     npt.assert_allclose(rms_norm.rms_norm(x), rms_norm_ref(x), rtol=1e-5)
 
 
 def test_batching():
-    x = jnp.linspace(-0.5, 0.5, 15).reshape((3, 5))
+    x = jnp.linspace(-0.5, 0.5, 15, dtype=jnp.float32).reshape((3, 5))
     npt.assert_allclose(
         jax.vmap(rms_norm.rms_norm)(x), jax.vmap(rms_norm_ref)(x), rtol=1e-5
     )

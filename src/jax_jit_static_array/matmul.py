@@ -21,7 +21,7 @@ def matmul_jit(x, mul: tuple):
     "matmul",
     jax.ShapeDtypeStruct((1, ncols), x.dtype),
   )
-  return call(x, jnp.array(mul))
+  return call(x, jnp.array(mul, dtype=jnp.float32))
 
 def matmul_nonjit(x, mul: tuple):
   if x.dtype != jnp.float32:
@@ -36,4 +36,4 @@ def matmul_nonjit(x, mul: tuple):
     "matmul",
     jax.ShapeDtypeStruct((1, ncols), x.dtype),
   )
-  return call(x, jnp.array(mul))
+  return call(x, jnp.array(mul, dtype=jnp.float32))
